@@ -1,7 +1,6 @@
 package com.jnfragoso.workshopmongo.resources;
 
-import com.jnfragoso.workshopmongo.resources.util.URL;
-
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jnfragoso.workshopmongo.domain.Post;
+import com.jnfragoso.workshopmongo.resources.util.URL;
 import com.jnfragoso.workshopmongo.services.PostService;
 
 @RestController
@@ -35,5 +35,22 @@ public class PostResource {
 		
 		return ResponseEntity.ok().body(list);
 	}
+	
+	@GetMapping("/fullsearch")
+	public ResponseEntity<List<Post>> fullSearch(
+	        @RequestParam(value="text", defaultValue= "") String text,
+	        @RequestParam(value="minDate", defaultValue= "") String minDate,
+	        @RequestParam(value="maxDate", defaultValue= "") String maxDate) {
+	    
+	    text = URL.decodeParam(text);
+	    Date min = URL.convertDate(minDate, new Date(0L));
+	    Date max = URL.convertDate(minDate, new Date());
+	    
+	    List<Post> list = service.fullSearch(text, min, max); // aqui depois você vai chamar um fullSearch no service
+	    
+	    return ResponseEntity.ok().body(list);
+	}
+
+	
 }
 
